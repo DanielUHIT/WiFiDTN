@@ -14,15 +14,25 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
     EditText edtx1;
     TextView txvw1;
+    TextView txvw2;
+    TextView txvw3;
+    TextView txvw4;
+    TextView txvw5;
     Button btn;
     String Message;
+    String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
+    Random rand = new Random();
+    int r = rand.nextInt(5);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +46,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 edtx1 = (EditText) findViewById(R.id.editText1);
                 txvw1 = (TextView) findViewById(R.id.textView1);
-                //txvw1.setText(edtx1.getText().toString());
+                txvw2 = (TextView) findViewById(R.id.textView2);
+                txvw3 = (TextView) findViewById(R.id.textView3);
+                txvw4 = (TextView) findViewById(R.id.textView4);
+                txvw5 = (TextView) findViewById(R.id.textView5);
                 makeJSON();
             }
         });
@@ -51,16 +64,20 @@ public class MainActivity extends AppCompatActivity {
             WifiInfo wInfo = wifiManager.getConnectionInfo();
             String macAddress = wInfo.getMacAddress();
 
-            Long tsLong = System.currentTimeMillis() / 1000;
-            String ts = tsLong.toString();
+            //Long tsLong = System.currentTimeMillis() / 1000;
+            //String ts = tsLong.toString();
 
-            jObj.put("Created_on: ", ts);
-            jObj.put("Sent_by:", Build.USER);
+            jObj.put("Created_on:", currentDateTimeString);
+            jObj.put("Sent_by:", Build.MODEL);
             jObj.put("MAC_Address:", macAddress);
-            jObj.put("Number_of_Hops:", 1);
+            jObj.put("Number_of_Hops:", r);
             jObj.put("Message:", edtx1.getText());
 
-            txvw1.setText(jObj.toString());
+            txvw1.setText(jObj.getString("Created_on:"));
+            txvw2.setText(jObj.getString("Sent_by:"));
+            txvw3.setText(jObj.getString("MAC_Address:"));
+            txvw4.setText(jObj.getString("Number_of_Hops:"));
+            txvw5.setText(jObj.getString("Message:"));
 
             jArr.put(jObj);
 
