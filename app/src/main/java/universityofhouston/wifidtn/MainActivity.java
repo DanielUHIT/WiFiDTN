@@ -1,5 +1,6 @@
 package universityofhouston.wifidtn;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -63,12 +64,15 @@ public class MainActivity extends AppCompatActivity {
             WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
             WifiInfo wInfo = wifiManager.getConnectionInfo();
             String macAddress = wInfo.getMacAddress();
+            BluetoothAdapter myDevice = BluetoothAdapter.getDefaultAdapter();
+            String deviceName = myDevice.getName();
 
+            //Timestamp
             //Long tsLong = System.currentTimeMillis() / 1000;
             //String ts = tsLong.toString();
 
             jObj.put("Created_on:", currentDateTimeString);
-            jObj.put("Sent_by:", Build.MODEL);
+            jObj.put("Sent_by:", deviceName);
             jObj.put("MAC_Address:", macAddress);
             jObj.put("Number_of_Hops:", r);
             jObj.put("Message:", edtx1.getText());
