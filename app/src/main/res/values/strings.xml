@@ -3,4 +3,8 @@
     <string name="send">SEND</string>
     <string name="textview">TextView</string>
     <string name="created_on">Created On:</string>
+
+    <!--- Action Bars -->
+
+    <string name="wifisearch">wifisearch</string>
 </resources>
