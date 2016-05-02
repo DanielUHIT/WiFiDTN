@@ -15,6 +15,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".Devices"
+            android:theme="@style/AppTheme.CustomTheme"
+            ></activity>
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />

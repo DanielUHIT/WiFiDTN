@@ -1,10 +1,13 @@
 package universityofhouston.wifidtn;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Build;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,14 +17,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,10 +35,19 @@ public class MainActivity extends AppCompatActivity {
     TextView txvw4;
     TextView txvw5;
     Button btn;
-    String Message;
     String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
     Random rand = new Random();
     int r = rand.nextInt(5);
+
+//    Wifi Code
+
+    WifiP2pManager mManager;
+    WifiP2pManager.Channel mChannel;
+    BroadcastReceiver mReceiver;
+
+    IntentFilter mIntentFilter;
+
+    Button discover;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +55,44 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
+
+//      Register the Broadcast
+        mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+        mChannel =   mManager.initialize(this, getMainLooper(), null);
+        mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, this);
+
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
+        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
+        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+
+        final View.OnClickListener ScanListener=new View.OnClickListener(){
+            public void onClick(View v){
+
+//          DEBUG: Scanning Peers
+                Toast.makeText(MainActivity.this, "Scanning for peers", Toast.LENGTH_LONG).show();
+
+                mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
+
+                    public void onSuccess() {
+
+//                  DEBUG: Peers found
+                        Toast.makeText(MainActivity.this, "Peers found", Toast.LENGTH_LONG).show();
+
+                    }
+
+                    public void onFailure(int reasonCode) {
+
+//                  DEBUG: finding Peers
+                        Toast.makeText(MainActivity.this, "Error on canning process", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        };
+
+        discover = (Button) findViewById(R.id.buttonDiscover);
+        discover.setOnClickListener(ScanListener);
 
         btn = (Button) findViewById(R.id.button);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -62,16 +111,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(mReceiver, mIntentFilter);
+    }
+
+    // unregister the broadcast receiver
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mReceiver);
+    }
+
+
+
+    //Show the action bar wifi button.
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_wifi, menu);
         return true;
     }
 
+    //ActionBar button action
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_wifi:
-                //TODO call wifi button action.
+                startActivity(new Intent(MainActivity.this,Devices.class));
+
+//                mReceiver.discoverPeers();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

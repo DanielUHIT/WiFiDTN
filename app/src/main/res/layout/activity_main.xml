@@ -27,9 +27,10 @@
         android:layout_height="wrap_content"
         android:text="@string/send"
         android:id="@+id/button"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="buttonOnClick" />
+        android:onClick="buttonOnClick"
+        android:layout_above="@+id/tableRow"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="5dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -88,9 +89,10 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/editText1"
-        android:layout_above="@+id/button"
-        android:layout_centerHorizontal="true"
-        android:inputType="text" />
+        android:inputType="text"
+        android:layout_alignTop="@+id/button"
+        android:layout_toStartOf="@+id/button"
+        android:layout_marginTop="8dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -164,5 +166,32 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true" />
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tableRow"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:weightSum="1">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Discover"
+            android:id="@+id/buttonDiscover"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="0.80" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:text=" Enable "
+            android:id="@+id/buttonEnable"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="0.34" />
+
+    </TableRow>
 
 </RelativeLayout>
